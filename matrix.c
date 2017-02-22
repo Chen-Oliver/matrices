@@ -6,44 +6,80 @@
 
 
 /*-------------- void print_matrix() --------------
-Inputs:  struct matrix *m 
-Returns: 
+Inputs:  struct matrix *m
+Returns:
 
 print the matrix
 */
-void print_matrix(struct matrix *m) {
+void print_matrix(struct matrix *m){
+  for(int row = 0;row<m->rows;row++){
+    for(int col=0;col<m->cols;col++){
+      printf(" %f ",m->m[row][col]);
+    }
+    printf("\n");
+  }
 }
 
 /*-------------- void ident() --------------
 Inputs:  struct matrix *m <-- assumes m is a square matrix
-Returns: 
+Returns:
 
 turns m in to an identity matrix
 */
 void ident(struct matrix *m) {
+  int size = m->rows;
+  for(int row=0;row<size;row++){
+    for(int col=0;col<size;col++){
+      if(row==col){
+        m->m[row][col]=1;
+      }
+      else{
+        m->m[row][col]=0;
+      }
+    }
+  }
 }
 
 
 /*-------------- void scalar_mult() --------------
 Inputs:  double x
-         struct matrix *m 
-Returns: 
+         struct matrix *m
+Returns:
 
 multiply each element of m by x
 */
-void scalar_mult(double x, struct matrix *m) {
+void scalar_mult(double x, struct matrix *m){
+  for(int row=0;row<m->rows;row++){
+    for(int col=0;col<m->cols;col++){
+      m->m[row][col]*=x;
+    }
+  }
 }
 
 
 /*-------------- void matrix_mult() --------------
 Inputs:  struct matrix *a
-         struct matrix *b 
-Returns: 
+         struct matrix *b
+Returns:
 
 a*b -> b
 */
+
+//doesnt work for all matrices due to copy_matrix
 void matrix_mult(struct matrix *a, struct matrix *b) {
-}
+  int i,j,k;
+  struct matrix *c = new_matrix(a->rows,b->cols);
+    for(i=0;i<a->rows;i++){
+      for(j=0;j<b->cols;j++){
+        double sum = 0.0;
+        for(k=0;k<b->rows;k++){
+          sum+= a->m[i][k] * b->m[k][j];
+        }
+        c->m[i][j]=sum;
+      }
+    }
+    copy_matrix(c,b);
+    }
 
 
 /*===============================================
@@ -52,12 +88,12 @@ void matrix_mult(struct matrix *a, struct matrix *b) {
 
 /*-------------- struct matrix *new_matrix() --------------
 Inputs:  int rows
-         int cols 
-Returns: 
+         int cols
+Returns:
 
 Once allocated, access the matrix as follows:
 m->m[r][c]=something;
-if (m->lastcol)... 
+if (m->lastcol)...
 */
 struct matrix *new_matrix(int rows, int cols) {
   double **tmp;
@@ -80,8 +116,8 @@ struct matrix *new_matrix(int rows, int cols) {
 
 
 /*-------------- void free_matrix() --------------
-Inputs:  struct matrix *m 
-Returns: 
+Inputs:  struct matrix *m
+Returns:
 
 1. free individual rows
 2. free array holding row pointers
@@ -100,14 +136,14 @@ void free_matrix(struct matrix *m) {
 
 /*======== void grow_matrix() ==========
 Inputs:  struct matrix *m
-         int newcols 
-Returns: 
+         int newcols
+Returns:
 
 Reallocates the memory for m->m such that it now has
 newcols number of collumns
 ====================*/
 void grow_matrix(struct matrix *m, int newcols) {
-  
+
   int i;
   for (i=0;i<m->rows;i++) {
       m->m[i] = realloc(m->m[i],newcols*sizeof(double));
@@ -118,8 +154,8 @@ void grow_matrix(struct matrix *m, int newcols) {
 
 /*-------------- void copy_matrix() --------------
 Inputs:  struct matrix *a
-         struct matrix *b 
-Returns: 
+         struct matrix *b
+Returns:
 
 copy matrix a to matrix b
 */
@@ -127,8 +163,7 @@ void copy_matrix(struct matrix *a, struct matrix *b) {
 
   int r, c;
 
-  for (r=0; r < a->rows; r++) 
-    for (c=0; c < a->cols; c++)  
-      b->m[r][c] = a->m[r][c];  
+  for (r=0; r < a->rows; r++)
+    for (c=0; c < a->cols; c++)
+      b->m[r][c] = a->m[r][c];
 }
-
