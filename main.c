@@ -55,6 +55,6 @@ int main() {
 
 
   display(s);
-	save_extension(s, "matrix.png");
+  save_extension(s, "matrix.png");
   free_matrix( edges );
 }
